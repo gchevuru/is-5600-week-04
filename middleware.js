@@ -1,41 +1,41 @@
-function cors(req, res, next) {
-    const origin = req.headers.origin || '*';
+function cors (req, res, next) {
+    const origin = req.headers.origin
 
-    res.setHeader('Access-Control-Allow-Origin', origin);
-    res.setHeader('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS');
-    res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization');
-    res.setHeader('Access-Control-Allow-Credentials', 'true');
-    next();
-}
+    // Set the CORS headers
+    res.setHeader('Access-Control-Allow-Origin', origin || '*')
+    res.setHeader('Access-Control-Allow-Methods', 'POST, GET, PUT, DELETE, OPTIONS, XMODIFY')
+    res.setHeader('Access-Control-Allow-Credentials', true)
+    res.setHeader('Access-Control-Max-Age', '86400')
+    res.setHeader('Access-Control-Allow-Headers', 'X-Requested-With, X-HTTP-Method-Override, Content-Type, Accept')
 
-/**
- * Handle errors
- * @param {object} err
- * @param {object} req
- * @param {object} res
- * @param {function} next
- */
-function handleError(err, req, res, next) {
-    console.error(err);
+    next()
+  }
 
+
+function handleError (err, req, res, next) {
+    // Log the error to our server's console
+    console.error(err)
+
+    // If the response has already been sent, we can't send another response
     if (res.headersSent) {
-        return next(err);
+      return next(err)
     }
 
-    res.status(500).json({ error: 'Internal Server Error' });
-}
+    // Send a 500 error response
+    res.status(500).json({ error: "Internal Error Occurred" })
+  }
 
-/**
- * Handle 404 errors
- * @param {object} req
- * @param {object} res
- */
-function notFound(req, res) {
-    res.status(404).json({ error: 'Not Found' });
-}
+  /**
+   * Send a 404 response if no route is found
+   * @param {object} req
+   * @param {object} res
+   */
+  function notFound (req, res) {
+    res.status(404).json({ error: "Not Found" })
+  }
 
 module.exports = {
-    cors,
     handleError,
     notFound,
-};
+    cors
+}
